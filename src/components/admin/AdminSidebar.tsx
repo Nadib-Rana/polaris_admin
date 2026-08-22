@@ -87,11 +87,13 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
     <aside className="flex h-full w-72 flex-col justify-between border-r border-slate-200/80 bg-[#081F38] text-slate-200">
       {/* Top Section: Brand & Navigation */}
       <div className="flex flex-col gap-6 p-6">
-        {/* Brand Header with Main Official Logo */}
-        <div className="flex flex-col pb-4 border-b border-slate-700/60 space-y-2">
+        {/* Brand Header with Main Official Logo & Aligned Pill Badge */}
+        <div className="flex flex-col pb-4 border-b border-slate-700/60 space-y-3">
           <BrandLogo variant="dark" showTagline={false} />
-          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 pl-1">
-            <ShieldCheck className="h-3.5 w-3.5" />
+          
+          {/* Perfectly Aligned Admin Badge */}
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-400 w-fit shadow-2xs">
+            <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
             <span>Admin Management Hub</span>
           </div>
         </div>
