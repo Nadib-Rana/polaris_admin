@@ -1,10 +1,19 @@
 ﻿"use client";
 
 import React, { useState } from "react";
+import { Montserrat } from "next/font/google";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 import "./globals.css";
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700", "800"],
+});
 
 export default function RootLayout({
   children,
@@ -14,12 +23,12 @@ export default function RootLayout({
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   return (
-    <html lang="en">
+    <html lang="en" className={montserrat.variable}>
       <head>
         <title>Polaris Admin — Pflege Orientierung Management Hub</title>
         <meta name="description" content="Admin Dashboard for Swiss Elder Care & Family Caregiving Platform" />
       </head>
-      <body className="flex min-h-screen bg-[#F4F7FB] font-sans antialiased text-slate-800">
+      <body className={cn("flex min-h-screen bg-[#F4F7FB] font-sans antialiased text-slate-800", montserrat.className)}>
         {/* Desktop Persistent Sidebar */}
         <div className="hidden md:flex md:shrink-0 sticky top-0 h-screen z-40">
           <AdminSidebar />
