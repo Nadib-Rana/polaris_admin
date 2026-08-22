@@ -1,20 +1,80 @@
-export interface BaseProps {
-  className?: string;
-  children?: React.ReactNode;
+﻿export interface QuestionOption {
+  id: string;
+  text: string;
+  recommendationTag?: string;
 }
 
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  error?: string;
+export interface AssessmentQuestion {
+  id: number;
+  question: string;
+  subtitle: string;
+  category: "relation" | "living" | "assistance" | "pflegegrad" | "challenges" | "network" | "spitex" | "legal" | "wellbeing" | "canton" | "respite" | "goals" | "custom";
+  options: string[];
+  isActive: boolean;
 }
 
-export interface UserProfile {
+export interface AssessmentSubmission {
+  id: string;
+  caregiver: string;
+  relation: string;
+  living: string;
+  careDegree: string;
+  urgency: "High" | "Medium" | "Normal";
+  canton: string;
+  submittedAt: string;
+  score: number;
+  answers: Record<number, string>;
+  advisorNotes?: string;
+  status: "Reviewed" | "Pending Action" | "Archived";
+}
+
+export interface ConsultationLead {
   id: string;
   name: string;
+  phone: string;
   email: string;
-  image?: string;
-  role?: string;
-  createdAt?: string;
+  canton: string;
+  urgency: "High" | "Medium" | "Standard";
+  status: "new" | "contacted" | "scheduled" | "resolved";
+  preferredTime: string;
+  message: string;
+  assessmentId?: string;
+  assignedAdvisor?: string;
+  createdAt: string;
+  notes: string[];
+}
+
+export interface SituationSummary {
+  id: string;
+  title: string;
+  description: string;
+  targetCategory: string;
+  isActive: boolean;
+}
+
+export interface GuidanceResource {
+  id: string;
+  title: string;
+  description: string;
+  category: "therapy" | "community" | "equipment" | "spitex" | "legal";
+  cantons: string[];
+  linkUrl?: string;
+  isActive: boolean;
+}
+
+export interface TestimonialItem {
+  id: number;
+  name: string;
+  role: string;
+  quote: string;
+  image: string;
+  canton: string;
+  isVerified: boolean;
+}
+
+export interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+  category: string;
 }

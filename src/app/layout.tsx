@@ -1,66 +1,58 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+﻿"use client";
+
+import React, { useState } from "react";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminHeader } from "@/components/admin/AdminHeader";
+import { X } from "lucide-react";
 import "./globals.css";
-import { Navbar } from "@/components/common/Navbar";
-import { Footer } from "@/components/common/Footer";
-import { siteConfig } from "@/config/site";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-export const metadata: Metadata = {
-  title: {
-    default: siteConfig.name,
-    template: `%s | ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  keywords: [
-    "Next.js",
-    "React",
-    "Tailwind CSS",
-    "TypeScript",
-    "Starter Template",
-    "App Router",
-  ],
-  authors: [
-    {
-      name: "Next.js Starter",
-      url: siteConfig.url,
-    },
-  ],
-  creator: "Next.js Starter",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: siteConfig.url,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    siteName: siteConfig.name,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-  },
-};
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} font-sans antialiased bg-background text-foreground flex flex-col min-h-screen`}
-        suppressHydrationWarning
-      >
-        <Navbar />
-        <div className="flex-grow">{children}</div>
-        <Footer />
+    <html lang="en">
+      <head>
+        <title>Polaris Admin — Pflege Orientierung Management Hub</title>
+        <meta name="description" content="Admin Dashboard for Swiss Elder Care & Family Caregiving Platform" />
+      </head>
+      <body className="flex min-h-screen bg-[#F4F7FB] font-sans antialiased text-slate-800">
+        {/* Desktop Persistent Sidebar */}
+        <div className="hidden md:flex md:shrink-0 sticky top-0 h-screen z-40">
+          <AdminSidebar />
+        </div>
+
+        {/* Mobile Drawer Sidebar */}
+        {mobileSidebarOpen && (
+          <div className="fixed inset-0 z-50 flex md:hidden">
+            <div
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+              onClick={() => setMobileSidebarOpen(false)}
+            />
+            <div className="relative flex w-72 flex-1 flex-col bg-[#081F38] shadow-2xl">
+              <button
+                type="button"
+                onClick={() => setMobileSidebarOpen(false)}
+                aria-label="Close sidebar"
+                className="absolute top-4 right-4 rounded-lg p-1.5 text-slate-300 hover:bg-slate-800 hover:text-white"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <AdminSidebar onCloseMobile={() => setMobileSidebarOpen(false)} />
+            </div>
+          </div>
+        )}
+
+        {/* Main Content Area */}
+        <div className="flex flex-1 flex-col min-w-0 overflow-y-auto">
+          <AdminHeader onToggleMobileMenu={() => setMobileSidebarOpen(true)} />
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-8">
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   );
