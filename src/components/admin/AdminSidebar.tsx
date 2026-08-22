@@ -16,6 +16,7 @@ import {
   LogOut,
   ShieldCheck,
 } from "lucide-react";
+import { BrandLogo } from "@/components/common/BrandLogo";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -86,26 +87,12 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
     <aside className="flex h-full w-72 flex-col justify-between border-r border-slate-200/80 bg-[#081F38] text-slate-200">
       {/* Top Section: Brand & Navigation */}
       <div className="flex flex-col gap-6 p-6">
-        {/* Brand Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-700/60">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1A5695] text-white shadow-xs">
-                <Compass className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="text-base font-extrabold text-white tracking-tight block leading-none">
-                  Polaris Admin
-                </span>
-                <span className="text-[10px] text-slate-400 font-medium">
-                  Pflege Orientierung CH
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 pl-1 pt-2">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Admin Management Hub</span>
-            </div>
+        {/* Brand Header with Main Official Logo */}
+        <div className="flex flex-col pb-4 border-b border-slate-700/60 space-y-2">
+          <BrandLogo isDark={true} href="/" showTagline={false} />
+          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 pl-1">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            <span>Admin Management Hub</span>
           </div>
         </div>
 
