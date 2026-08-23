@@ -348,4 +348,36 @@ export const adminApi = {
     });
     return await handleResponse(res);
   },
+
+  // ==================== Activity & Audit Logs ====================
+  async getAuditLogs(params?: {
+    category?: string;
+    severity?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    const query = new URLSearchParams();
+    if (params?.category && params.category !== "ALL") query.append("category", params.category);
+    if (params?.severity && params.severity !== "ALL") query.append("severity", params.severity);
+    if (params?.search) query.append("search", params.search);
+    if (params?.page) query.append("page", String(params.page));
+    if (params?.limit) query.append("limit", String(params.limit));
+
+    const res = await fetch(`${API_BASE_URL}/api/admin/audit-logs?${query.toString()}`, {
+      headers: { ...getAuthHeader() },
+    });
+    return await handleResponse<{
+      items: import("@/types").AuditLogItem[];
+      meta: { total: number; page: number; limit: number; totalPages: number };
+    }>(res);
+  },
+
+  async getAuditStats() {
+    const res = await fetch(`${API_BASE_URL}/api/admin/audit-logs/stats`, {
+      headers: { ...getAuthHeader() },
+    });
+    return await handleResponse<import("@/types").AuditStats>(res);
+  },
 };
+

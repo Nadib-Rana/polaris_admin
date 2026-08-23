@@ -81,3 +81,32 @@ export interface FaqItem {
   answer: string;
   category: string;
 }
+
+export interface AuditLogItem {
+  id: string;
+  eventType: string;
+  category: "CLIENT_ACTION" | "ADVISOR_CRM" | "CONTENT_CMS" | "SECURITY_AUTH" | "SYSTEM_COMPLIANCE";
+  severity: "INFO" | "SUCCESS" | "WARNING" | "CRITICAL";
+  actorName: string;
+  actorRole: string;
+  actorEmail?: string;
+  action: string;
+  targetEntity?: string;
+  targetId?: string;
+  ipAddress?: string;
+  device?: string;
+  location?: string;
+  metadata?: Record<string, any>;
+  createdAt: string;
+}
+
+export interface AuditStats {
+  totalEvents24h: number;
+  clientSubmissions24h: number;
+  advisorActions24h: number;
+  securityAlerts24h: number;
+  criticalEventsCount: number;
+  status: string;
+  complianceStandard: string;
+}
+

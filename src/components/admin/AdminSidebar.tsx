@@ -15,6 +15,7 @@ import {
   ExternalLink,
   LogOut,
   ShieldCheck,
+  Activity,
 } from "lucide-react";
 import { BrandLogo } from "@/components/common/BrandLogo";
 import { cn } from "@/lib/utils";
@@ -68,6 +69,13 @@ const navItems: NavItem[] = [
     title: "Multilingual Matrix",
     href: "/translations",
     icon: Languages,
+  },
+  {
+    title: "Activity & Audit Log",
+    href: "/logs",
+    icon: Activity,
+    badge: "FADP",
+    badgeColor: "bg-emerald-100 text-emerald-800",
   },
   {
     title: "Settings & Privacy",
