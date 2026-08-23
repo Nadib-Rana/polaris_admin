@@ -1,4 +1,4 @@
-﻿export interface QuestionOption {
+export interface QuestionOption {
   id: string;
   text: string;
   recommendationTag?: string;
@@ -6,6 +6,7 @@
 
 export interface AssessmentQuestion {
   id: number;
+  key?: string;
   question: string;
   subtitle: string;
   category: "relation" | "living" | "assistance" | "pflegegrad" | "challenges" | "network" | "spitex" | "legal" | "wellbeing" | "canton" | "respite" | "goals" | "custom";
@@ -23,7 +24,7 @@ export interface AssessmentSubmission {
   canton: string;
   submittedAt: string;
   score: number;
-  answers: Record<number, string>;
+  answers: Record<string | number, string>;
   advisorNotes?: string;
   status: "Reviewed" | "Pending Action" | "Archived";
 }
@@ -39,6 +40,7 @@ export interface ConsultationLead {
   preferredTime: string;
   message: string;
   assessmentId?: string;
+  publicCode?: string;
   assignedAdvisor?: string;
   createdAt: string;
   notes: string[];
@@ -63,12 +65,13 @@ export interface GuidanceResource {
 }
 
 export interface TestimonialItem {
-  id: number;
+  id: number | string;
   name: string;
   role: string;
-  quote: string;
-  image: string;
   canton: string;
+  quote: string;
+  image?: string;
+  imageUrl?: string;
   isVerified: boolean;
 }
 

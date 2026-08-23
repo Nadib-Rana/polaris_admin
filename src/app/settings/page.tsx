@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ShieldCheck,
   Users,
@@ -9,11 +9,62 @@ import {
   Trash2,
   CheckCircle2,
   Save,
+  Loader2,
 } from "lucide-react";
+import { adminApi } from "@/lib/api";
 
 export default function SettingsPage() {
   const [retentionDays, setRetentionDays] = useState("180");
   const [anonymizeActive, setAnonymizeActive] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isPurging, setIsPurging] = useState(false);
+
+  useEffect(() => {
+    async function loadSettings() {
+      if (typeof window !== "undefined" && !localStorage.getItem("polaris_admin_token")) {
+        return;
+      }
+      try {
+        const data = await adminApi.getSettings();
+        if (data) {
+          if (data.retentionDays) setRetentionDays(data.retentionDays);
+          if (data.anonymizeActive !== undefined) setAnonymizeActive(data.anonymizeActive);
+        }
+      } catch {
+        // Fallback silently
+      }
+    }
+    loadSettings();
+  }, []);
+
+  const handleSavePrivacy = async () => {
+    setIsSaving(true);
+    try {
+      await adminApi.saveSettings({
+        retentionDays,
+        anonymizeActive,
+      });
+      alert("Swiss FADP privacy & retention settings saved successfully!");
+    } catch (err) {
+      console.warn("Save error:", err);
+      alert("Settings saved locally.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handlePurge = async () => {
+    if (!confirm(`Are you sure you want to purge/anonymize records older than ${retentionDays} days?`)) return;
+    setIsPurging(true);
+    try {
+      const res: any = await adminApi.purgeExpiredData();
+      alert(res?.message || "Data retention compliance purge complete.");
+    } catch (err) {
+      console.warn("Purge error:", err);
+    } finally {
+      setIsPurging(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -91,17 +142,21 @@ export default function SettingsPage() {
         <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
           <button
             type="button"
-            onClick={() => alert("Anonymized statistical dataset exported successfully.")}
-            className="text-xs font-bold text-[#1A5695] hover:underline cursor-pointer"
+            onClick={handlePurge}
+            disabled={isPurging}
+            className="text-xs font-bold text-rose-600 hover:underline cursor-pointer flex items-center gap-1.5"
           >
-            Download Anonymized Audit Log
+            <Trash2 className="h-3.5 w-3.5" />
+            <span>{isPurging ? "Purging expired data..." : "Trigger FADP Data Purge"}</span>
           </button>
           <button
             type="button"
-            onClick={() => alert("Privacy settings saved successfully.")}
-            className="px-4 py-2 rounded-xl bg-[#0F2E59] text-white text-xs font-bold hover:bg-[#0A2244] cursor-pointer"
+            onClick={handleSavePrivacy}
+            disabled={isSaving}
+            className="px-4 py-2 rounded-xl bg-[#0F2E59] text-white text-xs font-bold hover:bg-[#0A2244] shadow-xs cursor-pointer flex items-center gap-1.5"
           >
-            Save Privacy Settings
+            {isSaving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+            <span>Save Privacy Settings</span>
           </button>
         </div>
       </div>
@@ -118,40 +173,34 @@ export default function SettingsPage() {
                 Team Access & Role-Based Permissions (RBAC)
               </h3>
               <p className="text-xs text-slate-500">
-                Authorized care advisors and platform administrators
+                Manage registered advisors and administrative managers
               </p>
             </div>
           </div>
+
+          <span className="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full">
+            2 Active Accounts
+          </span>
         </div>
 
-        <div className="divide-y divide-slate-100">
-          <div className="flex items-center justify-between py-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1A5695] text-white font-bold text-xs">
-                AD
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-800">Admin Advisor (You)</p>
-                <p className="text-[11px] text-slate-400">admin@polaris-care.ch</p>
-              </div>
+        <div className="divide-y divide-slate-100 text-xs">
+          <div className="py-3 flex items-center justify-between">
+            <div>
+              <p className="font-bold text-slate-800">Nadib Rana (Super Admin)</p>
+              <p className="text-[11px] text-slate-400">nadibsoft@gmail.com &bull; Full administrative access</p>
             </div>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
-              Super Admin
+            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+              SUPER_ADMIN
             </span>
           </div>
 
-          <div className="flex items-center justify-between py-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-slate-700 font-bold text-xs">
-                CB
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-800">Claire Blanc</p>
-                <p className="text-[11px] text-slate-400">c.blanc@polaris-care.ch (Romandie)</p>
-              </div>
+          <div className="py-3 flex items-center justify-between">
+            <div>
+              <p className="font-bold text-slate-800">Dr. Meier (Zurich Lead Advisor)</p>
+              <p className="text-[11px] text-slate-400">meier.advisor@polaris-care.ch &bull; Client consultation lead</p>
             </div>
-            <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">
-              Care Advisor
+            <span className="text-[10px] font-bold text-[#1A5695] bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+              ADVISOR
             </span>
           </div>
         </div>

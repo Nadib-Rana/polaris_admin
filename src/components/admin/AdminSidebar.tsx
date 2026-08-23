@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import Link from "next/link";
@@ -82,6 +82,28 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
   const pathname = usePathname();
+  const [currentUser, setCurrentUser] = React.useState<{ name?: string; role?: string } | null>(null);
+
+  React.useEffect(() => {
+    try {
+      const stored = localStorage.getItem("polaris_admin_user");
+      if (stored) {
+        setCurrentUser(JSON.parse(stored));
+      }
+    } catch {
+      // Ignore
+    }
+  }, []);
+
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem("polaris_admin_token");
+      localStorage.removeItem("polaris_admin_user");
+    } catch {
+      // Ignore
+    }
+    window.location.href = "/login";
+  };
 
   return (
     <aside className="flex h-full w-72 flex-col justify-between border-r border-slate-200/80 bg-[#081F38] text-slate-200">
@@ -166,17 +188,21 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
         <div className="flex items-center justify-between pt-2">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1A5695] text-white font-bold text-xs shadow-xs">
-              AD
+              {currentUser?.name ? currentUser.name.slice(0, 2).toUpperCase() : "NR"}
             </div>
-            <div>
-              <p className="text-xs font-semibold text-white">Admin Advisor</p>
-              <p className="text-[11px] text-slate-400">Zurich Headquarters</p>
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-white truncate max-w-[120px]">
+                {currentUser?.name || "Nadib Rana"}
+              </p>
+              <p className="text-[10px] text-slate-400 truncate max-w-[120px]">
+                {currentUser?.role || "SUPER_ADMIN"}
+              </p>
             </div>
           </div>
           <button
             type="button"
             title="Log out"
-            onClick={() => alert("Logged out from admin session.")}
+            onClick={handleLogout}
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-red-400 transition-colors cursor-pointer"
           >
             <LogOut className="h-4 w-4" />
