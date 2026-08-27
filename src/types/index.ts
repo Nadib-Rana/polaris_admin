@@ -1,16 +1,16 @@
-export interface QuestionOption {
+﻿export interface QuestionOption {
   id: string;
-  text: string;
+  text: string | Record<string, string>;
   recommendationTag?: string;
 }
 
 export interface AssessmentQuestion {
   id: number;
   key?: string;
-  question: string;
-  subtitle: string;
+  question: string | Record<string, string>;
+  subtitle: string | Record<string, string>;
   category: "relation" | "living" | "assistance" | "pflegegrad" | "challenges" | "network" | "spitex" | "legal" | "wellbeing" | "canton" | "respite" | "goals" | "custom";
-  options: string[];
+  options: (string | Record<string, string>)[];
   isActive: boolean;
 }
 
@@ -48,17 +48,17 @@ export interface ConsultationLead {
 
 export interface SituationSummary {
   id: string;
-  title: string;
-  description: string;
-  targetCategory: string;
+  title: string | Record<string, string>;
+  description: string | Record<string, string>;
+  targetCategory: string | Record<string, string>;
   isActive: boolean;
 }
 
 export interface GuidanceResource {
   id: string;
-  title: string;
-  description: string;
-  category: "therapy" | "community" | "equipment" | "spitex" | "legal";
+  title: string | Record<string, string>;
+  description: string | Record<string, string>;
+  category: "therapy" | "community" | "equipment" | "spitex" | "legal" | string;
   cantons: string[];
   linkUrl?: string;
   isActive: boolean;
@@ -67,9 +67,9 @@ export interface GuidanceResource {
 export interface TestimonialItem {
   id: number | string;
   name: string;
-  role: string;
-  canton: string;
-  quote: string;
+  role: string | Record<string, string>;
+  canton: string | Record<string, string>;
+  quote: string | Record<string, string>;
   image?: string;
   imageUrl?: string;
   isVerified: boolean;
@@ -77,8 +77,8 @@ export interface TestimonialItem {
 
 export interface FaqItem {
   id: string;
-  question: string;
-  answer: string;
+  question: string | Record<string, string>;
+  answer: string | Record<string, string>;
   category: string;
 }
 
@@ -109,4 +109,3 @@ export interface AuditStats {
   status: string;
   complianceStandard: string;
 }
-

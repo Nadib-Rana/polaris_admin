@@ -22,43 +22,45 @@ import {
 import { initialQuestions } from "@/lib/mockData";
 import { AssessmentQuestion } from "@/types";
 import { adminApi } from "@/lib/api";
+import { useAdminLanguage } from "@/context/AdminLanguageContext";
 import { cn } from "@/lib/utils";
 
-type SupportedLang = "en" | "de" | "fr" | "it";
+type SupportedLang = "de" | "en" | "fr" | "it";
 
-function getLocalized(val: any, lang: SupportedLang = "en"): string {
+function getLocalized(val: any, lang: SupportedLang = "de"): string {
   if (!val) return "";
   if (typeof val === "string") return val;
   if (typeof val === "object") {
-    return val[lang] || val.en || val.de || val.fr || val.it || Object.values(val)[0] || "";
+    return val[lang] || val.de || val.en || val.fr || val.it || Object.values(val)[0] || "";
   }
   return String(val);
 }
 
 export default function QuestionBuilderPage() {
+  const { lang, t } = useAdminLanguage();
   const [questions, setQuestions] = useState<AssessmentQuestion[]>(initialQuestions);
   const [editingQuestion, setEditingQuestion] = useState<AssessmentQuestion | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
-  const [activeLangTab, setActiveLangTab] = useState<SupportedLang>("en");
+  const [activeLangTab, setActiveLangTab] = useState<SupportedLang>((lang as SupportedLang) || "de");
 
   // Multilingual Form states for Modal
   const [formTitles, setFormTitles] = useState<Record<SupportedLang, string>>({
-    en: "",
     de: "",
+    en: "",
     fr: "",
     it: "",
   });
   const [formSubtitles, setFormSubtitles] = useState<Record<SupportedLang, string>>({
-    en: "",
     de: "",
+    en: "",
     fr: "",
     it: "",
   });
   const [formCategory, setFormCategory] = useState<any>("custom");
   const [formOptions, setFormOptions] = useState<Record<SupportedLang, string[]>>({
-    en: ["", "", "", ""],
     de: ["", "", "", ""],
+    en: ["", "", "", ""],
     fr: ["", "", "", ""],
     it: ["", "", "", ""],
   });
@@ -66,22 +68,22 @@ export default function QuestionBuilderPage() {
   // Open Edit Modal
   const handleOpenEdit = (q: AssessmentQuestion) => {
     setEditingQuestion(q);
-    setActiveLangTab("en");
+    setActiveLangTab((lang as SupportedLang) || "de");
 
     // Extract multilingual values or fallback
     const extractString = (val: any, l: SupportedLang) =>
-      typeof val === "object" ? val?.[l] || val?.en || "" : String(val || "");
+      typeof val === "object" ? val?.[l] || val?.de || val?.en || "" : String(val || "");
 
     setFormTitles({
-      en: extractString(q.question, "en"),
       de: extractString(q.question, "de"),
+      en: extractString(q.question, "en"),
       fr: extractString(q.question, "fr"),
       it: extractString(q.question, "it"),
     });
 
     setFormSubtitles({
-      en: extractString(q.subtitle, "en"),
       de: extractString(q.subtitle, "de"),
+      en: extractString(q.subtitle, "en"),
       fr: extractString(q.subtitle, "fr"),
       it: extractString(q.subtitle, "it"),
     });
@@ -90,12 +92,12 @@ export default function QuestionBuilderPage() {
 
     const extractOptions = (l: SupportedLang) =>
       q.options.map((opt: any) =>
-        typeof opt === "object" && opt !== null ? opt[l] || opt.en || "" : String(opt || "")
+        typeof opt === "object" && opt !== null ? opt[l] || opt.de || opt.en || "" : String(opt || "")
       );
 
     setFormOptions({
-      en: extractOptions("en"),
       de: extractOptions("de"),
+      en: extractOptions("en"),
       fr: extractOptions("fr"),
       it: extractOptions("it"),
     });
@@ -106,18 +108,18 @@ export default function QuestionBuilderPage() {
   // Open Add New Modal
   const handleOpenAdd = () => {
     setEditingQuestion(null);
-    setActiveLangTab("en");
-    setFormTitles({ en: "", de: "", fr: "", it: "" });
+    setActiveLangTab((lang as SupportedLang) || "de");
+    setFormTitles({ de: "", en: "", fr: "", it: "" });
     setFormSubtitles({
-      en: "Select the most relevant option",
       de: "Wählen Sie die am besten passende Option",
+      en: "Select the most relevant option",
       fr: "Sélectionnez l'option la plus adaptée",
       it: "Seleziona l'opzione più pertinente",
     });
     setFormCategory("custom");
     setFormOptions({
-      en: ["Option A", "Option B", "Option C", "Option D"],
       de: ["Option A", "Option B", "Option C", "Option D"],
+      en: ["Option A", "Option B", "Option C", "Option D"],
       fr: ["Option A", "Option B", "Option C", "Option D"],
       it: ["Option A", "Option B", "Option C", "Option D"],
     });
@@ -127,36 +129,37 @@ export default function QuestionBuilderPage() {
   // Save Modal (Add or Edit)
   const handleSaveModal = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formTitles.en.trim() && !formTitles.de.trim()) {
-      alert("Please enter at least an English or German question title.");
+    if (!formTitles.de.trim() && !formTitles.en.trim()) {
+      alert("Bitte geben Sie mindestens einen deutschen oder englischen Fragetext ein.");
       return;
     }
 
+    const deOpts = formOptions.de.filter((opt) => opt.trim().length > 0);
     const enOpts = formOptions.en.filter((opt) => opt.trim().length > 0);
-    if (enOpts.length < 2) {
-      alert("Please provide at least 2 options for this question.");
+    if (deOpts.length < 2 && enOpts.length < 2) {
+      alert("Bitte geben Sie mindestens 2 Antwortoptionen für diese Frage an.");
       return;
     }
 
     const multiQuestionObj = {
-      en: formTitles.en || formTitles.de,
       de: formTitles.de || formTitles.en,
-      fr: formTitles.fr || formTitles.en,
-      it: formTitles.it || formTitles.en,
+      en: formTitles.en || formTitles.de,
+      fr: formTitles.fr || formTitles.de || formTitles.en,
+      it: formTitles.it || formTitles.de || formTitles.en,
     };
 
     const multiSubtitleObj = {
-      en: formSubtitles.en || formSubtitles.de,
       de: formSubtitles.de || formSubtitles.en,
-      fr: formSubtitles.fr || formSubtitles.en,
-      it: formSubtitles.it || formSubtitles.en,
+      en: formSubtitles.en || formSubtitles.de,
+      fr: formSubtitles.fr || formSubtitles.de || formSubtitles.en,
+      it: formSubtitles.it || formSubtitles.de || formSubtitles.en,
     };
 
-    const multiOptions = formOptions.en.map((opt, idx) => ({
-      en: opt || `Option ${idx + 1}`,
-      de: formOptions.de[idx] || opt,
-      fr: formOptions.fr[idx] || opt,
-      it: formOptions.it[idx] || opt,
+    const multiOptions = formOptions.de.map((opt, idx) => ({
+      de: opt || formOptions.en[idx] || `Option ${idx + 1}`,
+      en: formOptions.en[idx] || opt || `Option ${idx + 1}`,
+      fr: formOptions.fr[idx] || opt || formOptions.en[idx],
+      it: formOptions.it[idx] || opt || formOptions.en[idx],
     }));
 
     if (isAddingNew) {
@@ -213,10 +216,10 @@ export default function QuestionBuilderPage() {
   // Delete
   const handleDelete = (id: number) => {
     if (questions.length <= 1) {
-      alert("You must keep at least 1 question in the assessment flow.");
+      alert("Es muss mindestens eine Frage im Fragebogen verbleiben.");
       return;
     }
-    if (!confirm(`Are you sure you want to delete Question ${id}?`)) return;
+    if (!confirm(t("builder.confirmDelete") || `Möchten Sie Frage ${id} wirklich löschen?`)) return;
 
     const filtered = questions.filter((q) => q.id !== id);
     const reindexed = filtered.map((q, idx) => ({ ...q, id: idx + 1 }));
@@ -235,10 +238,10 @@ export default function QuestionBuilderPage() {
     setIsPublishing(true);
     try {
       await adminApi.syncQuestionBuilder(questions);
-      alert(`Published ${questions.length} Care Compass questions to the live backend engine!`);
+      alert(`Erfolgreich! ${questions.length} Pflege-Kompass Fragen wurden im Backend synchronisiert und live geschaltet.`);
     } catch (err) {
       console.warn("Publish error:", err);
-      alert("Questions saved locally.");
+      alert("Fragen wurden lokal im Browser gespeichert.");
     } finally {
       setIsPublishing(false);
     }
@@ -255,26 +258,26 @@ export default function QuestionBuilderPage() {
               className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-[#1A5695] transition-colors"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              <span>Back to Assessments</span>
+              <span>{t("nav.assessments")}</span>
             </Link>
           </div>
-          <h2 className="text-2xl font-bold text-[#0C2B4E]">
-            Question Builder CMS
+          <h2 className="text-xl sm:text-2xl font-bold text-[#0C2B4E]">
+            {t("builder.title")}
           </h2>
           <p className="text-xs sm:text-sm text-slate-500">
-            Design, reorder, and localize the 12-question clinical Care Compass assessment.
+            {t("builder.subtitle")}
           </p>
         </div>
 
         {/* Global Action Buttons */}
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
           <button
             type="button"
             onClick={handleOpenAdd}
             className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
           >
             <Plus className="h-4 w-4 text-[#1A5695]" />
-            <span>Add Question</span>
+            <span>{t("builder.addNewQuestion")}</span>
           </button>
 
           <button
@@ -288,7 +291,7 @@ export default function QuestionBuilderPage() {
             ) : (
               <Save className="h-4 w-4 text-emerald-400" />
             )}
-            <span>{isPublishing ? "Publishing..." : "Publish Live Flow"}</span>
+            <span>{isPublishing ? t("builder.publishing") : t("builder.saveAndPublish")}</span>
           </button>
         </div>
       </div>
@@ -297,9 +300,9 @@ export default function QuestionBuilderPage() {
       <div className="rounded-2xl border border-blue-100 bg-[#F0F7FF] p-4 flex items-start gap-3">
         <SlidersHorizontal className="h-5 w-5 text-[#1A5695] shrink-0 mt-0.5" />
         <div className="text-xs text-[#0F2E59] space-y-1">
-          <p className="font-bold">Clinical Care Assessment Architecture</p>
+          <p className="font-bold">Schweizer Pflege-Kompass Struktur & Punkteberechnung</p>
           <p className="text-slate-600 leading-relaxed">
-            All questions and options support full Swiss multilingual JSON storage (DE, FR, IT, EN). Changes published here update the scoring weight and Care Compass flow in real-time.
+            Alle Fragen und Antwortoptionen werden viersprachig gespeichert (DE, FR, IT, EN). Änderungen hier aktualisieren die Pflegegrad-Berechnung und den Fragebogen auf der öffentlichen Plattform in Echtzeit.
           </p>
         </div>
       </div>
@@ -310,13 +313,13 @@ export default function QuestionBuilderPage() {
           <div
             key={q.id}
             className={cn(
-              "rounded-2xl border bg-white p-5 shadow-xs transition-all space-y-3",
+              "rounded-2xl border bg-white p-4 sm:p-5 shadow-xs transition-all space-y-3",
               q.isActive ? "border-slate-200" : "border-slate-200/60 opacity-60 bg-slate-50/50"
             )}
           >
             {/* Row Top Header */}
-            <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#0F2E59] text-white font-mono text-xs font-bold">
                   {idx + 1}
                 </span>
@@ -336,7 +339,7 @@ export default function QuestionBuilderPage() {
                       : "bg-slate-200 text-slate-600"
                   )}
                 >
-                  {q.isActive ? "Active" : "Disabled"}
+                  {q.isActive ? "Aktiv" : "Deaktiviert"}
                 </button>
               </div>
 
@@ -348,7 +351,7 @@ export default function QuestionBuilderPage() {
                   disabled={idx === 0}
                   onClick={() => handleMove(idx, "up")}
                   className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 disabled:opacity-30 cursor-pointer"
-                  title="Move Up"
+                  title="Nach oben"
                 >
                   <MoveUp className="h-3.5 w-3.5" />
                 </button>
@@ -358,7 +361,7 @@ export default function QuestionBuilderPage() {
                   disabled={idx === questions.length - 1}
                   onClick={() => handleMove(idx, "down")}
                   className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 disabled:opacity-30 cursor-pointer"
-                  title="Move Down"
+                  title="Nach unten"
                 >
                   <MoveDown className="h-3.5 w-3.5" />
                 </button>
@@ -367,7 +370,7 @@ export default function QuestionBuilderPage() {
                   type="button"
                   onClick={() => handleOpenEdit(q)}
                   className="p-1.5 rounded-lg border border-slate-200 hover:bg-blue-50 hover:text-[#1A5695] text-slate-600 transition-colors cursor-pointer"
-                  title="Edit"
+                  title="Bearbeiten"
                 >
                   <Edit2 className="h-3.5 w-3.5" />
                 </button>
@@ -376,7 +379,7 @@ export default function QuestionBuilderPage() {
                   type="button"
                   onClick={() => handleDelete(q.id)}
                   className="p-1.5 rounded-lg border border-slate-200 hover:bg-red-50 hover:text-red-600 text-slate-600 transition-colors cursor-pointer"
-                  title="Delete"
+                  title="Löschen"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -386,9 +389,9 @@ export default function QuestionBuilderPage() {
             {/* Question Title & Subtitle */}
             <div className="space-y-1 pl-1">
               <h4 className="text-sm sm:text-base font-bold text-[#0C2B4E]">
-                {getLocalized(q.question, "en")}
+                {getLocalized(q.question, lang as SupportedLang)}
               </h4>
-              <p className="text-xs text-slate-400">{getLocalized(q.subtitle, "en")}</p>
+              <p className="text-xs text-slate-400">{getLocalized(q.subtitle, lang as SupportedLang)}</p>
             </div>
 
             {/* Options Pills */}
@@ -401,7 +404,7 @@ export default function QuestionBuilderPage() {
                   <span className="text-[10px] font-bold text-slate-400 mr-1.5">
                     {String.fromCharCode(65 + optIdx)}.
                   </span>
-                  <span>{getLocalized(opt, "en")}</span>
+                  <span>{getLocalized(opt, lang as SupportedLang)}</span>
                 </div>
               ))}
             </div>
@@ -411,16 +414,16 @@ export default function QuestionBuilderPage() {
 
       {/* Multilingual Edit / Add Modal */}
       {(editingQuestion || isAddingNew) && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
           <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-slate-100">
+            <div className="flex items-center justify-between p-5 sm:p-6 border-b border-slate-100">
               <div className="space-y-1">
-                <h3 className="text-lg font-bold text-[#0C2B4E]">
-                  {isAddingNew ? "Add New Question Step" : `Edit Question ${editingQuestion?.id}`}
+                <h3 className="text-base sm:text-lg font-bold text-[#0C2B4E]">
+                  {isAddingNew ? t("builder.modalTitleAdd") : t("builder.modalTitleEdit", { order: editingQuestion?.id || 1 })}
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Provide localized question titles, prompts, and option labels.
+                  Fragetexte, Hilfebeschreibungen und Antwortoptionen in 4 Sprachen bearbeiten.
                 </p>
               </div>
               <button
@@ -429,18 +432,18 @@ export default function QuestionBuilderPage() {
                   setEditingQuestion(null);
                   setIsAddingNew(false);
                 }}
-                className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             {/* Language Tabs in Modal */}
-            <div className="flex items-center gap-2 px-6 pt-4 border-b border-slate-100 bg-slate-50/60">
-              {(["en", "de", "fr", "it"] as SupportedLang[]).map((l) => {
+            <div className="flex items-center gap-1.5 sm:gap-2 px-5 sm:px-6 pt-3 border-b border-slate-100 bg-slate-50/60 overflow-x-auto">
+              {(["de", "en", "fr", "it"] as SupportedLang[]).map((l) => {
                 const labels: Record<SupportedLang, string> = {
-                  en: "🇬🇧 English (EN)",
                   de: "🇩🇪 Deutsch (DE)",
+                  en: "🇬🇧 English (EN)",
                   fr: "🇫🇷 Français (FR)",
                   it: "🇮🇹 Italiano (IT)",
                 };
@@ -450,7 +453,7 @@ export default function QuestionBuilderPage() {
                     type="button"
                     onClick={() => setActiveLangTab(l)}
                     className={cn(
-                      "px-3.5 py-2 text-xs font-bold rounded-t-lg transition-colors cursor-pointer border-b-2",
+                      "px-3 py-2 text-xs font-bold rounded-t-lg transition-colors cursor-pointer border-b-2 whitespace-nowrap",
                       activeLangTab === l
                         ? "border-[#0F2E59] text-[#0F2E59] bg-white shadow-2xs"
                         : "border-transparent text-slate-500 hover:text-slate-800"
@@ -463,27 +466,27 @@ export default function QuestionBuilderPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleSaveModal} className="flex-1 overflow-y-auto p-6 space-y-4">
+            <form onSubmit={handleSaveModal} className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
               <div className="space-y-1">
                 <label className="text-xs font-bold text-[#0C2B4E]">
-                  Question Title ({activeLangTab.toUpperCase()}) *
+                  Fragetext ({activeLangTab.toUpperCase()}) *
                 </label>
                 <input
                   type="text"
-                  required={activeLangTab === "en"}
+                  required={activeLangTab === "de" || activeLangTab === "en"}
                   value={formTitles[activeLangTab]}
                   onChange={(e) =>
                     setFormTitles({ ...formTitles, [activeLangTab]: e.target.value })
                   }
-                  placeholder={`Question title in ${activeLangTab.toUpperCase()}`}
+                  placeholder={`Fragetext auf ${activeLangTab.toUpperCase()}`}
                   className="w-full rounded-xl border border-slate-200 bg-[#F8FAFC] p-3 text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1A5695]/30"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-[#0C2B4E]">
-                    Subtitle / Prompt ({activeLangTab.toUpperCase()})
+                    Hilfetext / Untertitel ({activeLangTab.toUpperCase()})
                   </label>
                   <input
                     type="text"
@@ -491,31 +494,31 @@ export default function QuestionBuilderPage() {
                     onChange={(e) =>
                       setFormSubtitles({ ...formSubtitles, [activeLangTab]: e.target.value })
                     }
-                    placeholder="e.g. Select the closest match"
+                    placeholder="z.B. Wählen Sie die am besten zutreffende Option"
                     className="w-full rounded-xl border border-slate-200 bg-[#F8FAFC] p-3 text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1A5695]/30"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#0C2B4E]">Category Group</label>
+                  <label className="text-xs font-bold text-[#0C2B4E]">Kategorie / Dimension</label>
                   <select
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
                     className="w-full rounded-xl border border-slate-200 bg-[#F8FAFC] p-3 text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1A5695]/30 cursor-pointer"
                   >
-                    <option value="relation">Relation</option>
-                    <option value="living">Living</option>
-                    <option value="assistance">Assistance Level</option>
-                    <option value="pflegegrad">Pflegegrad</option>
-                    <option value="challenges">Challenges</option>
-                    <option value="network">Network</option>
-                    <option value="spitex">Spitex</option>
-                    <option value="legal">Legal & Directives</option>
-                    <option value="wellbeing">Wellbeing & Burnout</option>
-                    <option value="canton">Canton & Region</option>
-                    <option value="respite">Respite Care</option>
-                    <option value="goals">Goals</option>
-                    <option value="custom">Custom Dimension</option>
+                    <option value="relation">Beziehung (Relation)</option>
+                    <option value="living">Wohnsituation (Living)</option>
+                    <option value="assistance">Unterstützungsbedarf (Assistance)</option>
+                    <option value="pflegegrad">Pflegegrad & Kognition</option>
+                    <option value="challenges">Herausforderungen</option>
+                    <option value="network">Betreuungsnetzwerk</option>
+                    <option value="spitex">Spitex-Bedarf</option>
+                    <option value="legal">Vorsorgeauftrag & Rechtliches</option>
+                    <option value="wellbeing">Belastung & Wohlbefinden</option>
+                    <option value="canton">Kanton & Region</option>
+                    <option value="respite">Entlastungsangebote</option>
+                    <option value="goals">Ziele & Wünsche</option>
+                    <option value="custom">Eigene Dimension</option>
                   </select>
                 </div>
               </div>
@@ -523,7 +526,7 @@ export default function QuestionBuilderPage() {
               {/* Options for Active Language */}
               <div className="space-y-2 pt-2">
                 <label className="text-xs font-bold text-[#0C2B4E]">
-                  Answer Options ({activeLangTab.toUpperCase()}) (2 to 4)
+                  Antwortoptionen ({activeLangTab.toUpperCase()}) (2 bis 4 Optionen)
                 </label>
                 {formOptions[activeLangTab].map((opt, i) => (
                   <div key={i} className="flex items-center gap-2">
@@ -553,15 +556,15 @@ export default function QuestionBuilderPage() {
                     setEditingQuestion(null);
                     setIsAddingNew(false);
                   }}
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors"
+                  className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                 >
-                  Cancel
+                  {t("builder.cancel")}
                 </button>
                 <button
                   type="submit"
                   className="rounded-xl bg-[#0F2E59] hover:bg-[#0A2244] text-white px-5 py-2 text-xs font-bold shadow-xs transition-colors cursor-pointer"
                 >
-                  Save Question
+                  {t("builder.saveChanges")}
                 </button>
               </div>
             </form>
@@ -571,3 +574,4 @@ export default function QuestionBuilderPage() {
     </div>
   );
 }
+

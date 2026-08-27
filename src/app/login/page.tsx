@@ -17,9 +17,11 @@ import {
   Compass,
 } from "lucide-react";
 import { adminApi } from "@/lib/api";
+import { useAdminLanguage } from "@/context/AdminLanguageContext";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const { t } = useAdminLanguage();
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +44,7 @@ export default function AdminLoginPage() {
           localStorage.setItem("polaris_admin_token", res.accessToken);
           localStorage.setItem("polaris_admin_user", JSON.stringify(res.user));
         }
-        setSuccessMessage("Authentication successful! Redirecting to management hub...");
+        setSuccessMessage("Erfolgreich authentifiziert! Weiterleitung zum Dashboard...");
         setTimeout(() => {
           router.push("/");
           router.refresh();
@@ -51,7 +53,7 @@ export default function AdminLoginPage() {
     } catch (err: any) {
       console.error("Login failed:", err);
       setErrorMessage(
-        err.message || "Invalid username or password. Please verify your credentials."
+        err.message || "Ungültiger Benutzername oder Passwort. Bitte überprüfen Sie Ihre Anmeldedaten."
       );
     } finally {
       setIsLoading(false);
@@ -81,19 +83,19 @@ export default function AdminLoginPage() {
             Polaris Admin Hub
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 max-w-xs mx-auto">
-            Secure Swiss Healthcare Administration & Caregiver Guidance Management
+            Sichere Schweizer Pflegeberatung & Care-Compass Verwaltungsportal
           </p>
         </div>
 
         {/* Login Form Card */}
-        <div className="rounded-3xl bg-white/95 backdrop-blur-xl p-8 sm:p-10 border border-white/20 shadow-2xl space-y-6">
+        <div className="rounded-3xl bg-white/95 backdrop-blur-xl p-6 sm:p-10 border border-white/20 shadow-2xl space-y-6">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Staff Portal
+              Mitarbeiter-Portal
             </span>
             <div className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
               <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Swiss FADP Encrypted</span>
+              <span>Schweizer DSG / FADP</span>
             </div>
           </div>
 
@@ -116,7 +118,7 @@ export default function AdminLoginPage() {
             {/* Username or Email */}
             <div className="space-y-1.5">
               <label htmlFor="identifier" className="block text-xs font-bold text-slate-700">
-                Username or Email Address
+                Benutzername oder E-Mail-Adresse
               </label>
               <div className="relative">
                 <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -126,7 +128,7 @@ export default function AdminLoginPage() {
                   required
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder="admin or nadibsoft@gmail.com"
+                  placeholder="admin oder nadibsoft@gmail.com"
                   className="w-full rounded-xl bg-[#F4F7FB] pl-10 pr-4 py-3 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0F2E59] border border-slate-200 transition-all"
                 />
               </div>
@@ -136,10 +138,10 @@ export default function AdminLoginPage() {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label htmlFor="passwordField" className="block text-xs font-bold text-slate-700">
-                  Password
+                  Passwort
                 </label>
                 <span className="text-[11px] text-slate-400 hover:text-slate-600 cursor-pointer">
-                  Forgot?
+                  Passwort vergessen?
                 </span>
               </div>
               <div className="relative">
@@ -172,7 +174,7 @@ export default function AdminLoginPage() {
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="h-4 w-4 text-[#0F2E59] rounded-md cursor-pointer"
                 />
-                <span>Keep me signed in</span>
+                <span>Angemeldet bleiben</span>
               </label>
 
               <span className="text-[11px] font-medium text-slate-400">JWT 24h</span>
@@ -187,11 +189,11 @@ export default function AdminLoginPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Authenticating...</span>
+                  <span>Wird angemeldet...</span>
                 </>
               ) : (
                 <>
-                  <span>Sign In to Admin Hub</span>
+                  <span>Im Admin Hub anmelden</span>
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
@@ -202,10 +204,10 @@ export default function AdminLoginPage() {
           <div className="pt-4 border-t border-slate-100 space-y-2.5">
             <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
               <KeyRound className="h-3 w-3 text-[#1A5695]" />
-              <span>Quick Demo Accounts (1-Click Fill)</span>
+              <span>Demo-Konten (1-Klick Schnell-Login)</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => handleQuickFill("admin", "NADIBRANA")}
@@ -223,7 +225,7 @@ export default function AdminLoginPage() {
                 className="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50/60 text-left transition-colors cursor-pointer group"
               >
                 <p className="text-xs font-bold text-[#0C2B4E] group-hover:text-[#1A5695]">
-                  Zurich Advisor
+                  Zürich Berater
                 </p>
                 <p className="text-[10px] text-slate-400 font-mono">meier_advisor</p>
               </button>
@@ -233,9 +235,10 @@ export default function AdminLoginPage() {
 
         {/* Footer info */}
         <p className="text-center text-xs text-slate-500">
-          Polaris Care Admin &bull; Protected under Swiss Federal Act on Data Protection (FADP)
+          Polaris Care Admin &bull; Geschützt gemäss Schweizer Bundesgesetz über den Datenschutz (DSG)
         </p>
       </div>
     </div>
   );
 }
+

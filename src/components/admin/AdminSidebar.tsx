@@ -18,71 +18,8 @@ import {
   Activity,
 } from "lucide-react";
 import { BrandLogo } from "@/components/common/BrandLogo";
+import { useAdminLanguage } from "@/context/AdminLanguageContext";
 import { cn } from "@/lib/utils";
-
-interface NavItem {
-  title: string;
-  href: string;
-  icon: React.ElementType;
-  badge?: string;
-  badgeColor?: string;
-}
-
-const navItems: NavItem[] = [
-  {
-    title: "Overview",
-    href: "/",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Assessments",
-    href: "/assessments",
-    icon: Compass,
-    badge: "12 New",
-    badgeColor: "bg-[#EBF3FC] text-[#0F2E59]",
-  },
-  {
-    title: "Question Builder",
-    href: "/assessments/builder",
-    icon: SlidersHorizontal,
-    badge: "CMS",
-    badgeColor: "bg-purple-100 text-purple-800",
-  },
-  {
-    title: "Consultation Leads",
-    href: "/leads",
-    icon: Inbox,
-    badge: "3 Pending",
-    badgeColor: "bg-amber-100 text-amber-800",
-  },
-  {
-    title: "Guidance CMS",
-    href: "/guidance",
-    icon: Sparkles,
-  },
-  {
-    title: "Testimonials & FAQs",
-    href: "/content",
-    icon: MessageSquareQuote,
-  },
-  {
-    title: "Multilingual Matrix",
-    href: "/translations",
-    icon: Languages,
-  },
-  {
-    title: "Activity & Audit Log",
-    href: "/logs",
-    icon: Activity,
-    badge: "FADP",
-    badgeColor: "bg-emerald-100 text-emerald-800",
-  },
-  {
-    title: "Settings & Privacy",
-    href: "/settings",
-    icon: Settings,
-  },
-];
 
 interface AdminSidebarProps {
   onCloseMobile?: () => void;
@@ -90,6 +27,7 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
   const pathname = usePathname();
+  const { t } = useAdminLanguage();
   const [currentUser, setCurrentUser] = React.useState<{ name?: string; role?: string } | null>(null);
 
   React.useEffect(() => {
@@ -113,25 +51,81 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
     window.location.href = "/login";
   };
 
+  const navItems = [
+    {
+      title: t("nav.overview"),
+      href: "/",
+      icon: LayoutDashboard,
+    },
+    {
+      title: t("nav.assessments"),
+      href: "/assessments",
+      icon: Compass,
+      badge: `12 ${t("nav.badgeNew")}`,
+      badgeColor: "bg-[#EBF3FC] text-[#0F2E59]",
+    },
+    {
+      title: t("nav.questionBuilder"),
+      href: "/assessments/builder",
+      icon: SlidersHorizontal,
+      badge: t("nav.badgeCms"),
+      badgeColor: "bg-purple-100 text-purple-800",
+    },
+    {
+      title: t("nav.consultationLeads"),
+      href: "/leads",
+      icon: Inbox,
+      badge: `3 ${t("nav.badgePending")}`,
+      badgeColor: "bg-amber-100 text-amber-800",
+    },
+    {
+      title: t("nav.guidanceCms"),
+      href: "/guidance",
+      icon: Sparkles,
+    },
+    {
+      title: t("nav.testimonialsFaqs"),
+      href: "/content",
+      icon: MessageSquareQuote,
+    },
+    {
+      title: t("nav.translationMatrix"),
+      href: "/translations",
+      icon: Languages,
+    },
+    {
+      title: t("nav.activityLogs"),
+      href: "/logs",
+      icon: Activity,
+      badge: t("nav.badgeFadp"),
+      badgeColor: "bg-emerald-100 text-emerald-800",
+    },
+    {
+      title: t("nav.settingsPrivacy"),
+      href: "/settings",
+      icon: Settings,
+    },
+  ];
+
   return (
     <aside className="flex h-full w-72 flex-col justify-between border-r border-slate-200/80 bg-[#081F38] text-slate-200">
       {/* Top Section: Brand & Navigation */}
       <div className="flex flex-col gap-6 p-6">
-        {/* Brand Header with Main Official Logo - Shifted left with negative margin for 0 gap */}
+        {/* Brand Header with Main Official Logo */}
         <div className="flex flex-col pb-4 border-b border-slate-700/60 space-y-2.5">
           <BrandLogo variant="dark" showTagline={false} className="-ml-3" />
           
           {/* Flush Left Admin Pill Badge */}
           <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-400 w-fit shadow-2xs">
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-            <span>Admin Management Hub</span>
+            <span>{t("nav.adminHub")}</span>
           </div>
         </div>
 
         {/* Navigation Menu */}
         <nav className="space-y-1.5">
           <div className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-            Platform Modules
+            {t("nav.platformModules")}
           </div>
           {navItems.map((item) => {
             const isActive =
@@ -187,9 +181,9 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
         >
           <div className="flex items-center gap-2">
             <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
-            <span>Public Website</span>
+            <span>{t("nav.publicWebsite")}</span>
           </div>
-          <span className="text-[10px] text-slate-400">polaris-care.ch</span>
+          <span className="text-[10px] text-slate-400 font-mono">polaris-care.ch</span>
         </a>
 
         {/* User Profile Card */}
@@ -209,7 +203,7 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
           </div>
           <button
             type="button"
-            title="Log out"
+            title={t("nav.logout")}
             onClick={handleLogout}
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-red-400 transition-colors cursor-pointer"
           >
@@ -220,3 +214,4 @@ export function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
     </aside>
   );
 }
+
