@@ -250,16 +250,19 @@ export const adminApi = {
   },
 
   async saveTestimonial(item: Partial<TestimonialItem>) {
-    const isNew = !item.id;
+    const isNew = !item.id || typeof item.id === "number" || !String(item.id).includes("-");
     const method = isNew ? "POST" : "PATCH";
     const url = isNew
       ? `${API_BASE_URL}/api/admin/content/testimonials`
       : `${API_BASE_URL}/api/admin/content/testimonials/${encodeURIComponent(String(item.id))}`;
 
+    const { id, ...data } = item;
+    const bodyPayload = isNew ? data : item;
+
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json", ...getAuthHeader() },
-      body: JSON.stringify(item),
+      body: JSON.stringify(bodyPayload),
     });
     return await handleResponse(res);
   },
