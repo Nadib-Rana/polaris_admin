@@ -1,4 +1,4 @@
-﻿import {
+import {
   AssessmentQuestion,
   AssessmentSubmission,
   ConsultationLead,
@@ -465,7 +465,7 @@ export const initialLeads: ConsultationLead[] = [
     assessmentId: "CC-9011",
     assignedAdvisor: "Claire Blanc (Romandie Spezialistin)",
     createdAt: "20. Aug, 11:00",
-    notes: ["BeratungsgesprÃ¤ch fÃ¼r 24. Aug, 17:30 per Video-Call gebucht."],
+    notes: ["Beratungsgespräch für 24. Aug, 17:30 per Video-Call gebucht."],
   },
   {
     id: "LEAD-304",
@@ -476,8 +476,8 @@ export const initialLeads: ConsultationLead[] = [
     urgency: "Standard",
     status: "resolved",
     preferredTime: "Jederzeit",
-    message: "Pflege-Kompass fÃ¼r meinen Vater abgeschlossen. Vielen Dank fÃ¼r den strukturierten Leitfaden!",
-    assignedAdvisor: "Dr. Hans Meier (ZÃ¼rich Berater)",
+    message: "Pflege-Kompass für meinen Vater abgeschlossen. Vielen Dank für den strukturierten Leitfaden!",
+    assignedAdvisor: "Dr. Hans Meier (Zürich Berater)",
     createdAt: "18. Aug, 16:20",
     notes: ["Beratung erfolgreich abgeschlossen. Massgeschneiderter Leitfaden zugestellt."],
   },
@@ -495,8 +495,8 @@ export const initialSummaries: SituationSummary[] = [
     description: {
       de: "Ihre Angaben zeigen eine grundsätzlich funktionierende, aber zunehmend fordernde Pflegesituation zu Hause. Während die medizinische Grundversorgung gewährleistet ist, wächst der Bedarf an emotionaler Entlastung und gezielten Hilfsmitteln. Durch optimierte Einsatzplanung und Entlastungsdienste kann die Belastung der Angehörigen spürbar gesenkt werden.",
       en: "Your responses indicate a generally functioning but increasingly demanding care situation at home. While basic medical care is ensured, the need for emotional relief and specialized assistive devices is growing. Optimized scheduling and relief services can noticeably reduce caregiver strain.",
-      fr: "Vos réponses indiquent une situation de soins à domicile globalement fonctionnelle mais de plus en plus exigeante. Alors que les soins médicaux de base sont assurés, le besoin de soutien émotionnel et d'aides techniques augmente.",
-      it: "Le vostre risposte indicano una situazione assistenziale a domicilio generalmente funzionante ma sempre più impegnativa. Mentre l'assistenza medica di base è garantita, cresce il bisogno di sollievo emotivo e ausili mirati.",
+      fr: "Vos réponses indiquent une situation de soins à domicile globalement fonctionnelle mais de plus en plus exigeante. Alors que les soins médicaux de base sont assurés, le besoin de soutien émotionnel et d'aides techniques augmente. Une planification optimisée et des services de répit réduisent sensiblement la charge des proches.",
+      it: "Le vostre risposte indicano una situazione assistenziale a domicilio generalmente funzionante ma sempre più impegnativa. Mentre l'assistenza medica di base è garantita, cresce il bisogno di sollievo emotivo e ausili mirati. Una pianificazione ottimizzata e servizi di sollievo possono ridurre sensibilmente il carico dei familiari.",
     },
     targetCategory: {
       de: "Mittlerer Pflegebedarf, häusliche Pflege",
@@ -517,8 +517,8 @@ export const initialSummaries: SituationSummary[] = [
     description: {
       de: "Ihre Antworten deuten auf eine akute Erschöpfung und hohe 24/7-Betreuungsintensität hin. Prioritär sollte ein regionaler Entlastungsdienst (SRK / Pro Senectute) und eine Erweiterung der Spitex-Einsätze aktiviert werden, um einen gesundheitlichen Zusammenbruch der pflegenden Angehörigen zu verhindern.",
       en: "Your answers point to acute exhaustion and high 24/7 care intensity. Priority should be given to activating regional respite services (Red Cross / Pro Senectute) and expanding Spitex home nursing to prevent caregiver burnout.",
-      fr: "Vos réponses indiquent un épuisement aigu et une forte intensité de soins 24h/24. La priorité devrait être d'activer un service de répit régional (Croix-Rouge / Pro Senectute) et d'élargir les interventions Spitex.",
-      it: "Le risposte indicano un esaurimento acuto e un'elevata intensità di assistenza 24/7. La priorità dovrebbe essere l'attivazione di un servizio di sollievo regionale (Croce Rossa / Pro Senectute) e l'ampliamento degli interventi Spitex.",
+      fr: "Vos réponses indiquent un épuisement aigu et une forte intensité de soins 24h/24. La priorité devrait être d'activer un service de répit régional (Croix-Rouge / Pro Senectute) et d'élargir les interventions Spitex pour éviter un épuisement grave.",
+      it: "Le risposte indicano un esaurimento acuto e un'elevata intensità di assistenza 24/7. La priorità dovrebbe essere l'attivazione di un servizio di sollievo regionale (Croce Rossa / Pro Senectute) e l'ampliamento degli interventi Spitex per prevenire il burnout.",
     },
     targetCategory: {
       de: "Hohe Dringlichkeit, 24/7 Betreuung",
@@ -539,14 +539,36 @@ export const initialSummaries: SituationSummary[] = [
     description: {
       de: "Sie befinden sich in der Orientierungsphase. Nutzen Sie diese Zeit, um rechtliche Dokumente (Vorsorgeauftrag, Patientenverfügung) aufzusetzen und Kontakt mit kantonalen Anlaufstellen zu knüpfen, bevor akute Betreuungsengpässe entstehen.",
       en: "You are in the initial orientation phase. Use this time to set up legal documents (advance health directives, power of attorney) and connect with cantonal advisory offices before acute care bottlenecks arise.",
-      fr: "Vous êtes en phase d'orientation. Profitez de ce temps pour rédiger les documents juridiques (mandat pour cause d'inaptitude, directives anticipées) et contacter les centres cantonaux.",
-      it: "Vi trovate nella fase di orientamento. Utilizzate questo tempo per redigere i documenti legali (mandato precauzionale, direttive del paziente) e stabilire contatti con i centri cantonali.",
+      fr: "Vous êtes en phase d'orientation. Profitez de ce temps pour rédiger les documents juridiques (mandat pour cause d'inaptitude, directives anticipées) et contacter les centres cantonaux avant l'apparition d'urgences.",
+      it: "Vi trovate nella fase di orientamento. Utilizzate questo tempo per redigere i documenti legali (mandato precauzionale, direttive del paziente) e stabilire contatti con i centri cantonali prima che sorgano criticità.",
     },
     targetCategory: {
       de: "Leichte Unterstützung, Frühphase",
       en: "Mild Support, Early Stage",
       fr: "Soutien léger, stade précoce",
       it: "Supporto lieve, fase iniziale",
+    },
+    isActive: true,
+  },
+  {
+    id: "SUM-04",
+    title: {
+      de: "Schwerpunkt Demenz & kognitive Begleitung",
+      en: "Dementia Focus & Cognitive Care Support",
+      fr: "Accompagnement démence & soutien cognitif",
+      it: "Focus demenza & supporto cognitivo",
+    },
+    description: {
+      de: "Pflegesituationen mit kognitiven Veränderungen und Gedächtniseinschränkungen profitieren enorm von strukturierten Tagesabläufen, spezialisierten Tagesstätten und gezieltem Gedächtnistraining in Schweizer Betreuungsnetzwerken.",
+      en: "Care situations involving cognitive decline benefit tremendously from structured daily routines, specialized day care centers, and targeted memory training within Swiss care networks.",
+      fr: "Les situations de soins impliquant des troubles cognitifs bénéficient grandement de routines quotidiennes structurées, de centres de jour spécialisés et d'un accompagnement adapté.",
+      it: "Le situazioni di cura con decadimento cognitivo traggono grande beneficio da routine giornaliere strutturate, centri diurni specializzati e supporto mirato nelle reti svizzere.",
+    },
+    targetCategory: {
+      de: "Demenzbetreuung & Gedächtnisförderung",
+      en: "Dementia Care & Cognitive Support",
+      fr: "Soins de la démence & soutien cognitif",
+      it: "Assistenza demenza & supporto cognitivo",
     },
     isActive: true,
   },
@@ -610,6 +632,44 @@ export const initialResources: GuidanceResource[] = [
     linkUrl: "https://polaris-care.ch/resources/equipment",
     isActive: true,
   },
+  {
+    id: "RES-04",
+    title: {
+      de: "Offizielles Spitex-Verzeichnis Schweiz",
+      en: "Official Swiss Spitex Directory",
+      fr: "Répertoire officiel des CMS / Spitex en Suisse",
+      it: "Elenco ufficiale Spitex Svizzera",
+    },
+    description: {
+      de: "Akkreditierte gemeinnützige und private Spitex-Organisationen in allen 26 Schweizer Kantonen.",
+      en: "Accredited non-profit and private Spitex home care providers across all 26 Swiss cantons.",
+      fr: "Organisations Spitex et CMS reconnues d'utilité publique et privées dans les 26 cantons suisses.",
+      it: "Organizzazioni Spitex pubbliche e private accreditate in tutti i 26 cantoni svizzeri.",
+    },
+    category: "spitex",
+    cantons: ["Ganze Schweiz"],
+    linkUrl: "https://polaris-care.ch/resources/spitex",
+    isActive: true,
+  },
+  {
+    id: "RES-05",
+    title: {
+      de: "Schweizer Vorsorgeauftrag & KESB-Muster",
+      en: "Swiss Advance Care Directives & KESB Templates",
+      fr: "Mandat pour cause d'inaptitude suisse & modèles APEA",
+      it: "Mandato precauzionale svizzero & modelli ARP",
+    },
+    description: {
+      de: "Rechtssichere Vorlagen für Patientenverfügung, Vorsorgeauftrag und Beistandschaftsregelungen gemäss ZGB.",
+      en: "Legally verified templates for advance healthcare directives, power of attorney, and legal proxy according to the Swiss Civil Code.",
+      fr: "Modèles juridiquement conformes pour directives anticipées, mandat pour cause d'inaptitude selon le Code civil suisse.",
+      it: "Modelli legalmente conformi per direttive del paziente e mandato precauzionale secondo il Codice civile svizzero.",
+    },
+    category: "legal",
+    cantons: ["Ganze Schweiz"],
+    linkUrl: "https://polaris-care.ch/resources/legal",
+    isActive: true,
+  },
 ];
 
 export const initialTestimonials: TestimonialItem[] = [
@@ -671,6 +731,46 @@ export const initialTestimonials: TestimonialItem[] = [
     },
     image: "/images/journey_videocall.jpg",
     imageUrl: "/images/journey_videocall.jpg",
+    isVerified: true,
+  },
+  {
+    id: 4,
+    name: "Claudine Mercier",
+    role: {
+      de: "Tochter & Pflegekoordinatorin, Waadt",
+      en: "Daughter & Care Coordinator, Vaud",
+      fr: "Fille & coordinatrice des soins, Vaud",
+      it: "Figlia & coordinatrice dell'assistenza, Vaud",
+    },
+    canton: "Waadt (VD)",
+    quote: {
+      de: "Dank der mehrsprachigen Schweizer Plattform konnten wir die kantonalen Hilflosenentschädigungen und Spitex-Zuschüsse in der Westschweiz ohne bürokratische Hürden beantragen.",
+      en: "Thanks to the multilingual Swiss platform, we were able to apply for cantonal helplessness allowances and Spitex subsidies in Romandie without bureaucratic hurdles.",
+      fr: "Grâce à la plateforme suisse multilingue, nous avons pu demander les allocations pour impotent cantonales et les subventions Spitex en Suisse romande sans obstacles bureaucratiques.",
+      it: "Grazie alla piattaforma svizzera multilingue, abbiamo potuto richiedere gli assegni cantonali per grandi invalidi e i sussidi Spitex nella Svizzera romanda senza ostacoli burocratici.",
+    },
+    image: "/images/sarah.jpg",
+    imageUrl: "/images/sarah.jpg",
+    isVerified: true,
+  },
+  {
+    id: 5,
+    name: "Matteo Bianchi",
+    role: {
+      de: "Pflegender Angehöriger, Tessin",
+      en: "Family Caregiver, Ticino",
+      fr: "Proche aidant, Tessin",
+      it: "Familiare curante, Ticino",
+    },
+    canton: "Tessin (TI)",
+    quote: {
+      de: "Die personalisierten Empfehlungen haben uns geholfen, kantonale Entlastungsbeiträge im Tessin zu aktivieren, von denen wir zuvor nichts wussten. Eine unschätzbare Hilfe für pflegende Familien.",
+      en: "The personalized recommendations helped us activate cantonal relief allowances in Ticino that we didn't know existed. An invaluable help for caregiving families.",
+      fr: "Les recommandations personnalisées nous ont aidés à activer les allocations de répit cantonales au Tessin dont nous ignorions l'existence. Une aide inestimable pour les familles aidantes.",
+      it: "Le raccomandazioni personalizzate ci hanno aiutato ad attivare i contributi di sollievo cantonali in Ticino di cui non eravamo a conoscenza. Un aiuto inestimabile per le famiglie curanti.",
+    },
+    image: "/images/angel.jpg",
+    imageUrl: "/images/angel.jpg",
     isVerified: true,
   },
 ];
@@ -741,5 +841,6 @@ export const initialFaqs: FaqItem[] = [
     category: "Finanzen & Spitex",
   },
 ];
+
 
 

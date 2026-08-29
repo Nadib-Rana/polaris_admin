@@ -29,16 +29,12 @@ import {
   formatCaregiverName,
   formatCareDegree,
   formatAnswer,
+  getLocalizedContent,
 } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 
 function getLocalized(val: any, lang: string = "de"): string {
-  if (!val) return "";
-  if (typeof val === "string") return val;
-  if (typeof val === "object") {
-    return val[lang] || val.de || val.en || val.fr || val.it || Object.values(val)[0] || "";
-  }
-  return String(val);
+  return getLocalizedContent(val, lang);
 }
 
 export default function AssessmentsPage() {

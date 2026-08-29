@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import {
@@ -19,6 +19,7 @@ import { initialSummaries, initialResources } from "@/lib/mockData";
 import { SituationSummary, GuidanceResource } from "@/types";
 import { adminApi } from "@/lib/api";
 import { useAdminLanguage } from "@/context/AdminLanguageContext";
+import { getLocalizedContent } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 
 export default function GuidanceCmsPage() {
@@ -34,12 +35,7 @@ export default function GuidanceCmsPage() {
 
   // Helper to extract localized text
   const getLocaleText = (value: any, preferredLang = lang || "de"): string => {
-    if (!value) return "";
-    if (typeof value === "string") return value;
-    if (typeof value === "object") {
-      return value[preferredLang] || value.de || value.en || value.fr || value.it || Object.values(value)[0] || "";
-    }
-    return String(value);
+    return getLocalizedContent(value, preferredLang);
   };
 
   const loadGuidanceData = async () => {
@@ -66,12 +62,68 @@ export default function GuidanceCmsPage() {
   }, []);
 
   const handleOpenEditSummary = (sum: SituationSummary) => {
-    setEditingSummary(JSON.parse(JSON.stringify(sum)));
+    const titleObj =
+      typeof sum.title === "object" && sum.title !== null
+        ? sum.title
+        : {
+            de: getLocalizedContent(sum.title, "de"),
+            en: getLocalizedContent(sum.title, "en"),
+            fr: getLocalizedContent(sum.title, "fr"),
+            it: getLocalizedContent(sum.title, "it"),
+          };
+    const descObj =
+      typeof sum.description === "object" && sum.description !== null
+        ? sum.description
+        : {
+            de: getLocalizedContent(sum.description, "de"),
+            en: getLocalizedContent(sum.description, "en"),
+            fr: getLocalizedContent(sum.description, "fr"),
+            it: getLocalizedContent(sum.description, "it"),
+          };
+    const catObj =
+      typeof sum.targetCategory === "object" && sum.targetCategory !== null
+        ? sum.targetCategory
+        : {
+            de: getLocalizedContent(sum.targetCategory, "de"),
+            en: getLocalizedContent(sum.targetCategory, "en"),
+            fr: getLocalizedContent(sum.targetCategory, "fr"),
+            it: getLocalizedContent(sum.targetCategory, "it"),
+          };
+
+    setEditingSummary({
+      ...sum,
+      title: titleObj,
+      description: descObj,
+      targetCategory: catObj,
+    });
     setModalEditLang(lang || "de");
   };
 
   const handleOpenEditResource = (res: GuidanceResource) => {
-    setEditingResource(JSON.parse(JSON.stringify(res)));
+    const titleObj =
+      typeof res.title === "object" && res.title !== null
+        ? res.title
+        : {
+            de: getLocalizedContent(res.title, "de"),
+            en: getLocalizedContent(res.title, "en"),
+            fr: getLocalizedContent(res.title, "fr"),
+            it: getLocalizedContent(res.title, "it"),
+          };
+    const descObj =
+      typeof res.description === "object" && res.description !== null
+        ? res.description
+        : {
+            de: getLocalizedContent(res.description, "de"),
+            en: getLocalizedContent(res.description, "en"),
+            fr: getLocalizedContent(res.description, "fr"),
+            it: getLocalizedContent(res.description, "it"),
+          };
+
+    setEditingResource({
+      ...res,
+      title: titleObj,
+      description: descObj,
+    });
     setModalEditLang(lang || "de");
   };
 

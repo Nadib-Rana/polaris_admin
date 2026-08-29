@@ -23,17 +23,13 @@ import { initialQuestions } from "@/lib/mockData";
 import { AssessmentQuestion } from "@/types";
 import { adminApi } from "@/lib/api";
 import { useAdminLanguage } from "@/context/AdminLanguageContext";
+import { getLocalizedContent } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 
 type SupportedLang = "de" | "en" | "fr" | "it";
 
 function getLocalized(val: any, lang: SupportedLang = "de"): string {
-  if (!val) return "";
-  if (typeof val === "string") return val;
-  if (typeof val === "object") {
-    return val[lang] || val.de || val.en || val.fr || val.it || Object.values(val)[0] || "";
-  }
-  return String(val);
+  return getLocalizedContent(val, lang);
 }
 
 export default function QuestionBuilderPage() {
@@ -43,6 +39,12 @@ export default function QuestionBuilderPage() {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [activeLangTab, setActiveLangTab] = useState<SupportedLang>((lang as SupportedLang) || "de");
+
+  React.useEffect(() => {
+    if (lang && ["de", "en", "fr", "it"].includes(lang)) {
+      setActiveLangTab(lang as SupportedLang);
+    }
+  }, [lang]);
 
   // Multilingual Form states for Modal
   const [formTitles, setFormTitles] = useState<Record<SupportedLang, string>>({

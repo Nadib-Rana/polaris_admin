@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
@@ -24,15 +24,11 @@ import { initialTestimonials, initialFaqs } from "@/lib/mockData";
 import { TestimonialItem, FaqItem } from "@/types";
 import { adminApi } from "@/lib/api";
 import { useAdminLanguage } from "@/context/AdminLanguageContext";
+import { getLocalizedContent } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 
 function getLocalized(val: any, lang: string = "de"): string {
-  if (!val) return "";
-  if (typeof val === "string") return val;
-  if (typeof val === "object") {
-    return val[lang] || val.de || val.en || val.fr || val.it || Object.values(val)[0] || "";
-  }
-  return String(val);
+  return getLocalizedContent(val, lang);
 }
 
 export default function ContentCmsPage() {
@@ -127,13 +123,23 @@ export default function ContentCmsPage() {
     const roleMap: Record<string, string> =
       typeof item.role === "object"
         ? { ...(item.role as Record<string, string>) }
-        : { de: item.role || "", en: item.role || "", fr: item.role || "", it: item.role || "" };
+        : {
+            de: getLocalizedContent(item.role, "de"),
+            en: getLocalizedContent(item.role, "en"),
+            fr: getLocalizedContent(item.role, "fr"),
+            it: getLocalizedContent(item.role, "it"),
+          };
     setAuthorRoleObj(roleMap);
 
     const quoteMap: Record<string, string> =
       typeof item.quote === "object"
         ? { ...(item.quote as Record<string, string>) }
-        : { de: item.quote || "", en: item.quote || "", fr: item.quote || "", it: item.quote || "" };
+        : {
+            de: getLocalizedContent(item.quote, "de"),
+            en: getLocalizedContent(item.quote, "en"),
+            fr: getLocalizedContent(item.quote, "fr"),
+            it: getLocalizedContent(item.quote, "it"),
+          };
     setQuoteObj(quoteMap);
 
     setImagePreview(item.image || item.imageUrl || "/images/sarah.jpg");
@@ -202,13 +208,23 @@ export default function ContentCmsPage() {
     const qMap: Record<string, string> =
       typeof item.question === "object"
         ? { ...(item.question as Record<string, string>) }
-        : { de: item.question || "", en: item.question || "", fr: item.question || "", it: item.question || "" };
+        : {
+            de: getLocalizedContent(item.question, "de"),
+            en: getLocalizedContent(item.question, "en"),
+            fr: getLocalizedContent(item.question, "fr"),
+            it: getLocalizedContent(item.question, "it"),
+          };
     setFaqQuestionObj(qMap);
 
     const aMap: Record<string, string> =
       typeof item.answer === "object"
         ? { ...(item.answer as Record<string, string>) }
-        : { de: item.answer || "", en: item.answer || "", fr: item.answer || "", it: item.answer || "" };
+        : {
+            de: getLocalizedContent(item.answer, "de"),
+            en: getLocalizedContent(item.answer, "en"),
+            fr: getLocalizedContent(item.answer, "fr"),
+            it: getLocalizedContent(item.answer, "it"),
+          };
     setFaqAnswerObj(aMap);
 
     setFaqCategory(item.category || "General");

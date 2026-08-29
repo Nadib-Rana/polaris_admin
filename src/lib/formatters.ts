@@ -362,4 +362,264 @@ export function formatPreferredTime(val: string | undefined | null, lang: string
   return formatted;
 }
 
+// Master Multilingual Dictionary for Content CMS (Testimonials, Summaries, Resources, FAQs)
+const CONTENT_DICTIONARY: Array<Record<string, string>> = [
+  // 1. Sarah Renner
+  {
+    de: "Pflegende Angehörige, Zürich",
+    en: "Family Caregiver, Zurich",
+    fr: "Proche aidante, Zurich",
+    it: "Familiare curante, Zurigo",
+  },
+  {
+    de: "Der Pflege-Kompass war unkompliziert auszufüllen und die Empfehlungen genau auf unsere Situation im Kanton Zürich abgestimmt. Statt stundenlang im Internet nach Antworten zu suchen, hatten wir innerhalb von 5 Minuten Klarheit über unsere nächsten Schritte.",
+    en: "The Care Compass assessment was straightforward to complete and the recommendations were perfectly tailored to our family situation in Canton Zurich. Instead of spending hours searching online, we had clarity on our next steps in just 5 minutes.",
+    fr: "L'évaluation Care Compass était simple à remplir et les recommandations parfaitement adaptées à notre situation dans le canton de Zurich. En 5 minutes, nous avions des réponses claires sur nos prochaines étapes.",
+    it: "Il questionario Care Compass è stato facile da compilare e le raccomandazioni erano perfettamente calibrate sulla nostra situazione nel Canton Zurigo. In 5 minuti abbiamo avuto piena chiarezza sui passi successivi.",
+  },
+  // 2. Angel Dia
+  {
+    de: "Ehepartnerin & Betreuerin, Bern",
+    en: "Spouse & Caregiver, Bern",
+    fr: "Conjointe & aidante, Berne",
+    it: "Coniuge & curante, Berna",
+  },
+  {
+    de: "Pflege Orientierung hat uns geholfen, unsere Ansprüche bei den Ergänzungsleistungen (EL) zu verstehen und den passenden Spitex-Dienst in Bern zu finden. Die Erleichterung für unsere Familie war sofort spürbar.",
+    en: "Pflege Orientierung helped us understand our rights regarding supplementary financial benefits (EL) and find the right accredited Spitex home care provider in Bern. The relief for our family was immediate.",
+    fr: "Pflege Orientierung nous a aidés à comprendre nos droits aux prestations complémentaires (PC) et à trouver le bon service Spitex à Berne. Le soulagement pour notre famille a été immédiat.",
+    it: "Pflege Orientierung ci ha aiutato a comprendere i nostri diritti alle prestazioni complementari (PC) e a trovare il servizio Spitex adatto a Berna. Il sollievo per la nostra famiglia è stato immediato.",
+  },
+  // 3. Thomas Müller
+  {
+    de: "Hauptpflegender Angehöriger, Luzern",
+    en: "Primary Family Caregiver, Lucerne",
+    fr: "Proche aidant principal, Luzern",
+    it: "Familiare curante principale, Lucerna",
+  },
+  {
+    de: "Die Organisation der Pflege für meinen Vater schien zunächst überwältigend. Der strukturierte Schritt-für-Schritt-Leitfaden gab der ganzen Familie Sicherheit und einen klaren Weg für die Zusammenarbeit mit den Ärzten.",
+    en: "Organizing care for my father initially felt overwhelming. The structured step-by-step roadmap gave our entire family peace of mind and a clear path forward when coordinating with doctors and caregivers.",
+    fr: "Organiser les soins de mon père semblait accablant au début. Le guide étape par étape a apporté à toute notre famille une grande sérénité et une voie claire pour collaborer avec les médecins.",
+    it: "Organizzare l'assistenza per mio padre sembrava inizialmente insormontabile. La guida passo dopo passo ha dato a tutta la nostra famiglia sicurezza e una direzione chiara per collaborare con i medici.",
+  },
+  // 4. Claudine Mercier
+  {
+    de: "Tochter & Pflegekoordinatorin, Waadt",
+    en: "Daughter & Care Coordinator, Vaud",
+    fr: "Fille & coordinatrice des soins, Vaud",
+    it: "Figlia & coordinatrice dell'assistenza, Vaud",
+  },
+  {
+    de: "Dank der mehrsprachigen Schweizer Plattform konnten wir die kantonalen Hilflosenentschädigungen und Spitex-Zuschüsse in der Westschweiz ohne bürokratische Hürden beantragen.",
+    en: "Thanks to the multilingual Swiss platform, we were able to apply for cantonal helplessness allowances and Spitex subsidies in Romandie without bureaucratic hurdles.",
+    fr: "Grâce à la plateforme suisse multilingue, nous avons pu demander les allocations pour impotent cantonales et les subventions Spitex en Suisse romande sans obstacles bureaucratiques.",
+    it: "Grazie alla piattaforma svizzera multilingue, abbiamo potuto richiedere gli assegni cantonali per grandi invalidi e i sussidi Spitex nella Svizzera romanda senza ostacoli burocratici.",
+  },
+  // 5. Matteo Bianchi
+  {
+    de: "Pflegender Angehöriger, Tessin",
+    en: "Family Caregiver, Ticino",
+    fr: "Proche aidant, Tessin",
+    it: "Familiare curante, Ticino",
+  },
+  {
+    de: "Die personalisierten Empfehlungen haben uns geholfen, kantonale Entlastungsbeiträge im Tessin zu aktivieren, von denen wir zuvor nichts wussten. Eine unschätzbare Hilfe für pflegende Familien.",
+    en: "The personalized recommendations helped us activate cantonal relief allowances in Ticino that we didn't know existed. An invaluable help for caregiving families.",
+    fr: "Les recommandations personnalisées nous ont aidés à activer les allocations de répit cantonales au Tessin dont nous ignorions l'existence. Une aide inestimable pour les familles aidantes.",
+    it: "Le raccomandazioni personalizzate ci hanno aiutato ad attivare i contributi di sollievo cantonali in Ticino di cui non eravamo a conoscenza. Un aiuto inestimabile per le famiglie curanti.",
+  },
+
+  // Situation Summaries
+  {
+    de: "Stabile Betreuungssituation mit Entwicklungsbedarf",
+    en: "Stable Care Situation with Emerging Support Needs",
+    fr: "Situation de soins stable avec besoins d'accompagnement émergents",
+    it: "Situazione assistenziale stabile con bisogni di supporto emergenti",
+  },
+  {
+    de: "Ihre Angaben zeigen eine grundsätzlich funktionierende, aber zunehmend fordernde Pflegesituation zu Hause. Während die medizinische Grundversorgung gewährleistet ist, wächst der Bedarf an emotionaler Entlastung und gezielten Hilfsmitteln. Durch optimierte Einsatzplanung und Entlastungsdienste kann die Belastung der Angehörigen spürbar gesenkt werden.",
+    en: "Your responses indicate a generally functioning but increasingly demanding care situation at home. While basic medical care is ensured, the need for emotional relief and specialized assistive devices is growing. Optimized scheduling and relief services can noticeably reduce caregiver strain.",
+    fr: "Vos réponses indiquent une situation de soins à domicile globalement fonctionnelle mais de plus en plus exigeante. Alors que les soins médicaux de base sont assurés, le besoin de soutien émotionnel et d'aides techniques augmente. Une planification optimisée et des services de répit réduisent sensiblement la charge des proches.",
+    it: "Le vostre risposte indicano una situazione assistenziale a domicilio generalmente funzionante ma sempre più impegnativa. Mentre l'assistenza medica di base è garantita, cresce il bisogno di sollievo emotivo e ausili mirati. Una pianificazione ottimizzata e servizi di sollievo possono ridurre sensibilmente il carico dei familiari.",
+  },
+  {
+    de: "Mittlerer Pflegebedarf, häusliche Pflege",
+    en: "Moderate Care Need, Home Care",
+    fr: "Besoin de soins modéré, soins à domicile",
+    it: "Bisogno di cura moderato, assistenza domiciliare",
+  },
+  {
+    de: "Hohe Dringlichkeit & Entlastungsbedarf für Angehörige",
+    en: "High Urgency & Immediate Relief for Family Caregivers",
+    fr: "Urgence élevée & besoin de répit pour les proches aidants",
+    it: "Alta urgenza & bisogno di sollievo per i familiari curanti",
+  },
+  {
+    de: "Ihre Antworten deuten auf eine akute Erschöpfung und hohe 24/7-Betreuungsintensität hin. Prioritär sollte ein regionaler Entlastungsdienst (SRK / Pro Senectute) und eine Erweiterung der Spitex-Einsätze aktiviert werden, um einen gesundheitlichen Zusammenbruch der pflegenden Angehörigen zu verhindern.",
+    en: "Your answers point to acute exhaustion and high 24/7 care intensity. Priority should be given to activating regional respite services (Red Cross / Pro Senectute) and expanding Spitex home nursing to prevent caregiver burnout.",
+    fr: "Vos réponses indiquent un épuisement aigu et une forte intensité de soins 24h/24. La priorité devrait être d'activer un service de répit régional (Croix-Rouge / Pro Senectute) et d'élargir les interventions Spitex pour éviter un épuisement grave.",
+    it: "Le risposte indicano un esaurimento acuto e un'elevata intensità di assistenza 24/7. La priorità dovrebbe essere l'attivazione di un servizio di sollievo regionale (Croce Rossa / Pro Senectute) e l'ampliamento degli interventions Spitex per prevenire il burnout.",
+  },
+  {
+    de: "Hohe Dringlichkeit, 24/7 Betreuung",
+    en: "High Urgency, 24/7 Care",
+    fr: "Haute urgence, soins 24h/24",
+    it: "Alta urgenza, assistenza 24/7",
+  },
+  {
+    de: "Frühzeitige Orientierung & Vorsorgeplanung",
+    en: "Early Orientation & Advance Healthcare Planning",
+    fr: "Orientation précoce & planification anticipée",
+    it: "Orientamento precoce & pianificazione previdenziale",
+  },
+  {
+    de: "Sie befinden sich in der Orientierungsphase. Nutzen Sie diese Zeit, um rechtliche Dokumente (Vorsorgeauftrag, Patientenverfügung) aufzusetzen und Kontakt mit kantonalen Anlaufstellen zu knüpfen, bevor akute Betreuungsengpässe entstehen.",
+    en: "You are in the initial orientation phase. Use this time to set up legal documents (advance health directives, power of attorney) and connect with cantonal advisory offices before acute care bottlenecks arise.",
+    fr: "Vous êtes en phase d'orientation. Profitez de ce temps pour rédiger les documents juridiques (mandat pour cause d'inaptitude, directives anticipées) et contacter les centres cantonaux avant l'apparition d'urgences.",
+    it: "Vi trovate nella fase di orientamento. Utilizzate questo tempo per redigere i documenti legali (mandato precauzionale, direttive del paziente) e stabilire contatti con i centri cantonali prima che sorgano criticità.",
+  },
+  {
+    de: "Leichte Unterstützung, Frühphase",
+    en: "Mild Support, Early Stage",
+    fr: "Soutien léger, stade précoce",
+    it: "Supporto lieve, fase iniziale",
+  },
+  {
+    de: "Schwerpunkt Demenz & kognitive Begleitung",
+    en: "Dementia Focus & Cognitive Care Support",
+    fr: "Accompagnement démence & soutien cognitif",
+    it: "Focus demenza & supporto cognitivo",
+  },
+  {
+    de: "Pflegesituationen mit kognitiven Veränderungen und Gedächtniseinschränkungen profitieren enorm von strukturierten Tagesabläufen, spezialisierten Tagesstätten und gezieltem Gedächtnistraining in Schweizer Betreuungsnetzwerken.",
+    en: "Care situations involving cognitive decline benefit tremendously from structured daily routines, specialized day care centers, and targeted memory training within Swiss care networks.",
+    fr: "Les situations de soins impliquant des troubles cognitifs bénéficient grandement de routines quotidiennes structurées, de centres de jour spécialisés et d'un accompagnement adapté.",
+    it: "Le situazioni di cura con decadimento cognitivo traggono grande beneficio da routine giornaliere strutturate, centri diurni specializzati e supporto mirato nelle reti svizzere.",
+  },
+  {
+    de: "Demenzbetreuung & Gedächtnisförderung",
+    en: "Dementia Care & Cognitive Support",
+    fr: "Soins de la démence & soutien cognitif",
+    it: "Assistenza demenza & supporto cognitivo",
+  },
+
+  // Guidance Resources
+  {
+    de: "Physiotherapie & Mobilitätsberatung",
+    en: "Physical Therapy & Mobility Consultation",
+    fr: "Physiothérapie & conseil en mobilité",
+    it: "Fisioterapia & consulenza sulla mobilità",
+  },
+  {
+    de: "Akkreditierte spezialisierte Therapeuten für Sturzprophylaxe und Bewegungsförderung im häuslichen Umfeld.",
+    en: "Accredited specialist therapists for fall prevention and mobility enhancement in the home environment.",
+    fr: "Thérapeutes spécialisés accrédités pour la prévention des chutes et l'amélioration de la mobilité à domicile.",
+    it: "Terapisti specializzati accreditati per la prevenzione delle cadute e la promozione del movimento a domicilio.",
+  },
+  {
+    de: "Lokaler Angehörigen-Treffpunkt (CareCircle)",
+    en: "Local Family Caregiver Support Group (CareCircle)",
+    fr: "Groupe de soutien local pour proches aidants (CareCircle)",
+    it: "Gruppo di supporto locale per familiari curanti (CareCircle)",
+  },
+  {
+    de: "Erfahrungsaustausch und gegenseitige Unterstützung mit anderen pflegenden Familien in Ihrer Region.",
+    en: "Peer exchange and mutual support with other caregiving families in your region.",
+    fr: "Échange d'expériences et soutien mutuel avec d'autres familles aidantes de votre région.",
+    it: "Scambio di esperienze e sostegno reciproco con altre famiglie curanti della vostra regione.",
+  },
+  {
+    de: "Hilfsmittel & Wohnraumanpassung",
+    en: "Assistive Equipment & Home Modification Guide",
+    fr: "Moyens auxiliaires & adaptation du logement",
+    it: "Ausili & adattamento degli spazi abitativi",
+  },
+  {
+    de: "Leitfaden für barrierefreie Badezimmer, Treppenlifte und adaptive Alltagshilfen mit kantonalen Zuschüssen.",
+    en: "Guide for barrier-free bathrooms, stairlifts, and adaptive daily living aids with cantonal subsidies.",
+    fr: "Guide pour salles de bain accessibles, monte-escaliers et aides quotidiennes avec subventions cantonales.",
+    it: "Guida per bagni privi di barriere, montascale e ausili per la vita quotidiana con sussidi cantonali.",
+  },
+  {
+    de: "Offizielles Spitex-Verzeichnis Schweiz",
+    en: "Official Swiss Spitex Directory",
+    fr: "Répertoire officiel des CMS / Spitex en Suisse",
+    it: "Elenco ufficiale Spitex Svizzera",
+  },
+  {
+    de: "Akkreditierte gemeinnützige und private Spitex-Organisationen in allen 26 Schweizer Kantonen.",
+    en: "Accredited non-profit and private Spitex home care providers across all 26 Swiss cantons.",
+    fr: "Organisations Spitex et CMS reconnues d'utilité publique et privées dans les 26 cantons suisses.",
+    it: "Organizzazioni Spitex pubbliche e private accreditate in tutti i 26 cantoni svizzeri.",
+  },
+  {
+    de: "Schweizer Vorsorgeauftrag & KESB-Muster",
+    en: "Swiss Advance Care Directives & KESB Templates",
+    fr: "Mandat pour cause d'inaptitude suisse & modèles APEA",
+    it: "Mandato precauzionale svizzero & modelli ARP",
+  },
+  {
+    de: "Rechtssichere Vorlagen für Patientenverfügung, Vorsorgeauftrag und Beistandschaftsregelungen gemäss ZGB.",
+    en: "Legally verified templates for advance healthcare directives, power of attorney, and legal proxy according to the Swiss Civil Code.",
+    fr: "Modèles juridiquement conformes pour directives anticipées, mandat pour cause d'inaptitude selon le Code civil suisse.",
+    it: "Modelli legalmente conformi per direttive del paziente e mandato precauzionale secondo il Codice civile svizzero.",
+  },
+];
+
+/**
+ * Universal Multilingual Content Localizer
+ * Translates multilingual objects, parsed JSON, or seeded plain strings dynamically into the target language.
+ */
+export function getLocalizedContent(
+  val: any,
+  lang: string = "de",
+  preferredDefault: string = "de"
+): string {
+  if (!val && val !== 0) return "";
+
+  // 1. If val is an object: { de: "...", en: "...", fr: "...", it: "..." }
+  if (typeof val === "object" && val !== null) {
+    if (val[lang]) return String(val[lang]);
+    if (val[preferredDefault]) return String(val[preferredDefault]);
+    if (val.en) return String(val.en);
+    if (val.de) return String(val.de);
+    if (val.fr) return String(val.fr);
+    if (val.it) return String(val.it);
+    const firstVal = Object.values(val)[0];
+    return firstVal ? String(firstVal) : "";
+  }
+
+  // 2. If val is a string, check if it's a JSON string
+  const strVal = String(val).trim();
+  if (strVal.startsWith("{") && strVal.endsWith("}")) {
+    try {
+      const parsed = JSON.parse(strVal);
+      if (typeof parsed === "object" && parsed !== null) {
+        return getLocalizedContent(parsed, lang, preferredDefault);
+      }
+    } catch {}
+  }
+
+  // 3. Reverse lookup in Master Multilingual Dictionary for exact / partial string match
+  const lowerStr = strVal.toLowerCase();
+  for (const entry of CONTENT_DICTIONARY) {
+    const isMatch = Object.values(entry).some(
+      (trans) => trans.trim().toLowerCase() === lowerStr
+    );
+    if (isMatch) {
+      return entry[lang] || entry[preferredDefault] || entry.de || entry.en || strVal;
+    }
+  }
+
+  // 4. Check answer & option map
+  const answerFormatted = formatAnswer(strVal, lang);
+  if (answerFormatted && answerFormatted.toLowerCase() !== lowerStr) {
+    return answerFormatted;
+  }
+
+  return strVal;
+}
+
+
 
